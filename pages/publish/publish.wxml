@@ -1,0 +1,105 @@
+<view class="container">
+
+  <!-- 商品名称 -->
+  <view class="section">
+    <text class="label">商品名称（必填）</text>
+    <input
+      class="input"
+      placeholder="请输入商品名称"
+      value="{{name}}"
+      bindinput="onNameInput"
+      maxlength="20"
+    />
+  </view>
+
+  <!-- 商品详情 -->
+  <view class="section">
+    <text class="label">商品详情（必填）</text>
+    <textarea
+      class="textarea"
+      placeholder="请描述商品的成色、规格等信息"
+      value="{{desc}}"
+      bindinput="onDescInput"
+      maxlength="200"
+    />
+  </view>
+
+  <!-- 商品价格 -->
+  <view class="section">
+    <text class="label">价格（必填）</text>
+    <view class="price-row">
+      <text class="price-symbol">¥</text>
+      <input
+        class="price-input"
+        type="digit"
+        placeholder="请输入价格"
+        value="{{price}}"
+        bindinput="onPriceInput"
+      />
+    </view>
+  </view>
+
+  <!-- 上传图片 -->
+  <view class="section">
+    <text class="label">商品图片（必填）</text>
+    <view class="image-list">
+      <!-- 已有云图片（编辑模式） -->
+      <view
+        wx:for="{{cloudImageIds}}"
+        wx:key="*this"
+        class="image-item"
+      >
+        <image src="{{item}}" mode="aspectFill" class="preview-image"/>
+        <text class="delete-btn" bindtap="deleteImage" data-index="{{index}}">×</text>
+      </view>
+      <!-- 新选择的本地图片 -->
+      <view
+        wx:for="{{images}}"
+        wx:key="*this"
+        class="image-item"
+      >
+        <image src="{{item}}" mode="aspectFill" class="preview-image"/>
+        <text class="delete-btn" bindtap="deleteImage" data-index="{{index + cloudImageIds.length}}">×</text>
+      </view>
+      <!-- 添加按钮 -->
+      <view class="add-image" bindtap="chooseImage" wx:if="{{images.length + cloudImageIds.length < 3}}">
+        <text class="add-icon">+</text>
+        <text class="add-text">添加图片</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 商品分类 -->
+  <view class="section">
+    <text class="label">商品分类（必填）</text>
+    <view class="category-list">
+      <view
+        wx:for="{{categories}}"
+        wx:key="id"
+        class="category-item {{activeCategory === item.id ? 'active' : ''}}"
+        bindtap="onCategoryTap"
+        data-id="{{item.id}}"
+      >
+        {{item.name}}
+      </view>
+    </view>
+  </view>
+
+  <!-- 商品所在位置（手动搜索选点） -->
+  <view class="section">
+    <text class="label">商品所在位置（必填）</text>
+    <view class="location-row" bindtap="chooseLocation">
+      <view class="location-info-box">
+        <text class="location-name">{{locationName || '点击选择商品所在小区/位置'}}</text>
+        <text class="location-addr" wx:if="{{locationAddress}}">{{locationAddress}}</text>
+      </view>
+      <text class="location-btn">{{latitude ? '重新选择' : '选择位置'}}</text>
+    </view>
+  </view>
+
+  <!-- 提交按钮 -->
+  <button class="submit-btn" bindtap="onSubmit" disabled="{{submitting}}">
+    {{submitting ? '提交中...' : (isEditMode ? '保存修改' : '发布闲置')}}
+  </button>
+
+</view>

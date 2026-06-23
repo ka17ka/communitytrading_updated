@@ -1,0 +1,42 @@
+<view class="conv-page">
+
+  <view wx:if="{{loading}}" class="loading-hint">
+    <text>加载中...</text>
+  </view>
+
+  <block wx:if="{{!loading}}">
+    <view wx:if="{{conversations.length === 0}}" class="empty">
+      <text class="empty-icon">💬</text>
+      <text class="empty-text">还没有消息</text>
+    </view>
+
+    <view wx:else>
+      <view
+        wx:for="{{conversations}}"
+        wx:key="otherOpenid"
+        class="conv-item"
+        bindtap="onConvTap"
+        data-goods-id="{{item.goodsId}}"
+        data-other-openid="{{item.otherOpenid}}"
+        data-nick-name="{{item.nickName}}"
+      >
+        <view class="conv-avatar-wrap">
+          <image wx:if="{{item.avatarUrl}}" class="conv-avatar" src="{{item.avatarUrl}}" mode="aspectFill"/>
+          <view wx:else class="conv-avatar conv-avatar-default">
+            <text class="conv-emoji">🐻</text>
+          </view>
+          <view wx:if="{{item.unreadCount == 1}}" class="conv-dot"></view>
+          <view wx:elif="{{item.unreadCount > 1}}" class="conv-dot-num">{{item.unreadCount > 99 ? '99+' : item.unreadCount}}</view>
+        </view>
+        <view class="conv-info">
+          <view class="conv-top">
+            <text class="conv-name">{{item.nickName || '用户'}}</text>
+            <text class="conv-time">{{item.lastTime}}</text>
+          </view>
+          <text class="conv-preview">{{item.lastMsg}}</text>
+        </view>
+      </view>
+    </view>
+  </block>
+
+</view>

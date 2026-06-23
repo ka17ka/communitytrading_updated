@@ -1,0 +1,65 @@
+<view class="container">
+
+  <!-- 固定在顶部的搜索栏和分类 -->
+  <view class="fixed-top">
+    <view class="search-bar">
+      <input
+        class="search-input"
+        placeholder="搜索闲置物品"
+        bindinput="onSearchInput"
+        value="{{searchKey}}"
+        confirm-type="search"
+        bindconfirm="onSearch"
+      />
+      <text class="search-btn" bindtap="onSearch">搜索</text>
+    </view>
+
+    <scroll-view class="category-list" scroll-x>
+      <view
+        wx:for="{{categories}}"
+        wx:key="id"
+        class="category-item {{activeCategory === item.id ? 'active' : ''}}"
+        bindtap="onCategoryTap"
+        data-id="{{item.id}}"
+      >
+        {{item.name}}
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 加载中提示 -->
+  <view class="loading-hint" wx:if="{{loading}}">
+    <text>加载中...</text>
+  </view>
+
+  <!-- 空状态提示 -->
+  <view class="empty-hint" wx:if="{{!loading && goodsList.length === 0}}">
+    <text>暂无商品，去发布第一件吧！</text>
+  </view>
+
+  <!-- 商品列表独享滚动 -->
+  <scroll-view class="goods-scroll" scroll-y enable-flex>
+    <view class="goods-list">
+      <view
+        wx:for="{{goodsList}}"
+        wx:key="_id"
+        class="goods-item"
+        bindtap="onGoodsTap"
+        data-id="{{item._id}}"
+      >
+        <image class="goods-image" src="{{item.image}}" mode="aspectFill"/>
+        <view class="goods-info">
+          <text class="goods-name">{{item.name}}</text>
+          <text class="goods-desc">{{item.desc}}</text>
+          <view class="goods-bottom">
+            <text class="goods-price">¥{{item.price}}</text>
+            <text class="goods-distance">{{item.distance}}</text>
+          </view>
+          <text class="goods-seller">卖家：{{item.nickName || '用户'}}</text>
+          <text class="goods-location" wx:if="{{item.locationName}}">📍{{item.locationName}}</text>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+</view>

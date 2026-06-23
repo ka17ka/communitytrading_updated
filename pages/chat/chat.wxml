@@ -1,0 +1,48 @@
+<view class="container">
+
+  <!-- 消息列表 -->
+  <scroll-view class="msg-list" scroll-y scroll-into-view="{{scrollIntoView}}">
+    <view wx:for="{{messages}}" wx:key="_id" class="msg-item" id="msg-{{item._id}}">
+
+      <!-- 对方消息（左边） -->
+      <view wx:if="{{!item.isSelf}}" class="msg-row msg-left">
+        <image wx:if="{{item.avatarUrl}}" class="avatar" src="{{item.avatarUrl}}" mode="aspectFill"/>
+        <view wx:else class="avatar avatar-default"><text class="avatar-emoji">🐻</text></view>
+        <view class="bubble bubble-left">
+          <text wx:if="{{item.type === 'text'}}">{{item.content}}</text>
+          <image wx:elif="{{item.type === 'image'}}" src="{{item.content}}" mode="widthFix" class="msg-image"/>
+        </view>
+      </view>
+
+      <!-- 自己消息（右边） -->
+      <view wx:if="{{item.isSelf}}" class="msg-row msg-right">
+        <view class="bubble bubble-right">
+          <text wx:if="{{item.type === 'text'}}">{{item.content}}</text>
+          <image wx:elif="{{item.type === 'image'}}" src="{{item.content}}" mode="widthFix" class="msg-image"/>
+        </view>
+        <image wx:if="{{item.avatarUrl}}" class="avatar" src="{{item.avatarUrl}}" mode="aspectFill"/>
+        <view wx:else class="avatar avatar-default"><text class="avatar-emoji">🐻</text></view>
+      </view>
+
+    </view>
+  </scroll-view>
+
+  <!-- 底部输入框 -->
+  <view class="input-bar">
+    <input
+      class="msg-input"
+      placeholder="说点什么..."
+      value="{{inputVal}}"
+      bindinput="onInput"
+      confirm-type="send"
+      bindconfirm="onSend"
+    />
+    <view class="icon-btn" bindtap="chooseImage">
+      <text class="icon-text">图</text>
+    </view>
+    <view class="send-btn" bindtap="onSend">
+      <text class="send-text">发送</text>
+    </view>
+  </view>
+
+</view>

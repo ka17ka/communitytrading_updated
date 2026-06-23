@@ -1,0 +1,51 @@
+{
+  "pages": [
+    "pages/login/login",
+    "pages/home/home",
+    "pages/publish/publish",
+    "pages/location/location",
+    "pages/detail/detail",
+    "pages/chat/chat",
+    "pages/profile/profile",
+    "pages/mygoods/mygoods",
+    "pages/editprofile/editprofile",
+    "pages/conversations/conversations"
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "小区闲置交易",
+    "navigationBarBackgroundColor": "#ffffff",
+    "backgroundColorTop": "#ffffff"
+  },
+  "tabBar": {
+    "list": [
+      {
+        "pagePath": "pages/home/home",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/publish/publish",
+        "text": "发布"
+      },
+      {
+        "pagePath": "pages/conversations/conversations",
+        "text": "消息"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的"
+      }
+    ]
+  },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "用于显示附近商品距离"
+    }
+  },
+  "requiredPrivateInfos": [
+    "getLocation",
+    "chooseLocation"
+  ],
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

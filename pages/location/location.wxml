@@ -1,0 +1,43 @@
+<view class="page">
+
+  <!-- 搜索行：全宽、贴边、吸顶 -->
+  <view class="search-row" bindtap="onSearchTap">
+    <text class="search-icon">🔍</text>
+    <view class="search-body">
+      <text class="search-title">搜索商品所在位置</text>
+      <text class="search-sub">在地图中查找小区或地址</text>
+    </view>
+    <text class="search-chevron">›</text>
+  </view>
+
+  <!-- 分隔 -->
+  <view class="sep"></view>
+
+  <!-- 常用地址 -->
+  <block wx:if="{{frequentList.length > 0}}">
+    <view class="list-head">
+      <text class="list-head-text">常用地址</text>
+    </view>
+    <view
+      wx:for="{{frequentList}}"
+      wx:key="name"
+      class="addr-row"
+      bindtap="onFrequentTap"
+      data-index="{{index}}"
+    >
+      <view class="addr-body">
+        <text class="addr-name">{{item.name}}</text>
+        <text class="addr-sub" wx:if="{{item.address}}">{{item.address}}</text>
+      </view>
+      <text class="addr-del" catchtap="onDeleteFrequent" data-index="{{index}}">×</text>
+    </view>
+  </block>
+
+  <!-- 空状态 -->
+  <view class="empty" wx:if="{{frequentList.length === 0}}">
+    <text class="empty-icon">📍</text>
+    <text class="empty-msg">暂无常用地址</text>
+    <text class="empty-hint">搜索并选过的地址会自动出现在这里</text>
+  </view>
+
+</view>

@@ -1,0 +1,80 @@
+<view class="container {{isMine ? 'container-no-bar' : ''}}">
+
+  <!-- 加载中 -->
+  <view class="loading-hint" wx:if="{{loading}}">
+    <text>加载中...</text>
+  </view>
+
+  <block wx:if="{{!loading && goods}}">
+
+    <!-- 商品图片轮播 -->
+    <swiper
+      wx:if="{{goods.cloudImageIds && goods.cloudImageIds.length > 0}}"
+      class="image-swiper"
+      indicator-dots="{{goods.cloudImageIds.length > 1}}"
+      indicator-color="#ccc"
+      indicator-active-color="#07c160"
+    >
+      <swiper-item wx:for="{{goods.cloudImageIds}}" wx:key="*this">
+        <image src="{{item}}" mode="aspectFill" class="goods-image"/>
+      </swiper-item>
+    </swiper>
+
+    <!-- 单张图片回退（没有 cloudImageIds 数组但有单图） -->
+    <image
+      wx:elif="{{goods.image}}"
+      class="goods-image-single"
+      src="{{goods.image}}"
+      mode="aspectFill"
+    />
+
+    <!-- 无图片占位 -->
+    <view class="image-placeholder" wx:else>
+      <text class="placeholder-text">暂无图片</text>
+    </view>
+
+    <!-- 商品信息 -->
+    <view class="section">
+      <view class="price-row">
+        <text class="price">¥{{goods.price}}</text>
+        <text class="status {{goods.status === 'off' ? 'off' : ''}}">
+          {{goods.status === 'off' ? '已下架' : ''}}
+        </text>
+      </view>
+      <text class="name">{{goods.name}}</text>
+      <text class="desc">{{goods.desc}}</text>
+    </view>
+
+    <!-- 卖家信息 -->
+    <view class="section">
+      <view class="seller-row">
+        <image wx:if="{{goods.avatarUrl && !avatarFailed}}" class="seller-avatar" src="{{goods.avatarUrl}}" mode="aspectFill" binderror="onAvatarError"/>
+        <view wx:if="{{!goods.avatarUrl || avatarFailed}}" class="seller-avatar seller-avatar-default">
+          <text class="avatar-emoji">🐻</text>
+        </view>
+        <view class="seller-info">
+          <text class="seller-name">{{goods.nickName || '用户'}}</text>
+          <text class="seller-desc" wx:if="{{!isMine}}">点击下方按钮与卖家沟通</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 位置信息 -->
+    <view class="section" wx:if="{{goods.latitude}}">
+      <view class="location-row" bindtap="onNavigate">
+        <view class="location-info">
+          <text class="location-title">{{goods.locationName || '商品位置'}}</text>
+          <text class="location-text">{{goods.locationAddress || '点击打开地图导航'}}</text>
+        </view>
+        <text class="location-arrow">›</text>
+      </view>
+    </view>
+
+    <!-- 底部按钮：联系卖家（含自己的商品，方便测试） -->
+    <view class="bottom-bar">
+      <button class="chat-btn" bindtap="onChat">{{isMine ? '测试聊天(自己)' : '联系卖家'}}</button>
+    </view>
+
+  </block>
+
+</view>

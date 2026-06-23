@@ -1,0 +1,31 @@
+<view class="container">
+
+  <!-- 头像 -->
+  <view class="section">
+    <text class="label">头像</text>
+    <button class="avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+      <image class="avatar-preview" src="{{avatarUrl}}" mode="aspectFill" wx:if="{{avatarUrl}}"/>
+      <text class="avatar-placeholder" wx:else>点击选择头像</text>
+    </button>
+  </view>
+
+  <!-- 昵称 -->
+  <view class="section">
+    <text class="label">昵称</text>
+    <input
+      class="input"
+      value="{{nickName}}"
+      placeholder="请输入昵称"
+      bindinput="onNickNameInput"
+    />
+  </view>
+
+  <!-- 手机号（只读） -->
+  <view class="section">
+    <text class="label">手机号</text>
+    <text class="phone-text">{{phone || '未绑定'}}</text>
+  </view>
+
+  <button class="save-btn" bindtap="onSave">保存修改</button>
+
+</view>

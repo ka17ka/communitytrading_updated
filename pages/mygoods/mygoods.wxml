@@ -1,0 +1,54 @@
+<view class="container">
+
+  <!-- 加载中 -->
+  <view class="loading-hint" wx:if="{{loading}}">
+    <text>加载中...</text>
+  </view>
+
+  <view wx:if="{{!loading && myGoods.length === 0}}" class="empty">
+    <text class="empty-text">你还没有发布任何商品</text>
+  </view>
+
+  <view
+    wx:for="{{myGoods}}"
+    wx:key="_id"
+    class="goods-item"
+  >
+    <!-- 商品主体，点击查看详情 -->
+    <view class="goods-main" bindtap="onGoodsTap" data-id="{{item._id}}">
+      <view class="goods-image-wrap">
+        <image wx:if="{{item.image}}" class="goods-image" src="{{item.image}}" mode="aspectFill"/>
+        <view wx:else class="goods-image-placeholder"/>
+        <!-- 下架遮罩 -->
+        <view wx:if="{{item.status === 'off'}}" class="off-shelf-mask">
+          <text class="off-shelf-text">已下架</text>
+        </view>
+      </view>
+      <view class="goods-info">
+        <text class="goods-name">{{item.name}}</text>
+        <text class="goods-desc">{{item.desc}}</text>
+        <text class="goods-price">¥{{item.price}}</text>
+      </view>
+    </view>
+
+    <!-- 操作按钮栏 -->
+    <view class="action-bar">
+      <view
+        class="action-btn {{item.status === 'off' ? 'btn-on' : 'btn-off'}}"
+        hover-class="action-btn-hover"
+        bindtap="onToggleStatus"
+        data-id="{{item._id}}"
+        data-status="{{item.status}}"
+      >
+        {{item.status === 'off' ? '上架' : '下架'}}
+      </view>
+      <view class="action-btn btn-edit" hover-class="action-btn-hover" bindtap="onEdit" data-id="{{item._id}}">
+        编辑
+      </view>
+      <view class="action-btn btn-delete" hover-class="action-btn-hover" bindtap="onDelete" data-id="{{item._id}}">
+        删除
+      </view>
+    </view>
+  </view>
+
+</view>
