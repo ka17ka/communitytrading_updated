@@ -4,6 +4,27 @@ App({
     this.refreshUnreadBadge()
   },
 
+  // 刷新未读消息 tab 红点
+  refreshUnreadBadge() {
+    wx.cloud.callFunction({
+      name: 'chat',
+      data: { action: 'getUnreadCount' },
+      success: (res) => {
+        if (res.result && res.result.code === 0) {
+          const count = res.result.count || 0
+          if (count > 0) {
+            wx.setTabBarBadge({ index: 2, text: String(count > 99 ? '99+' : count) })
+          } else {
+            wx.removeTabBarBadge({ index: 2 })
+          }
+        }
+      },
+      fail: (err) => {
+        console.error('刷新未读红点失败:', err)
+      }
+    })
+  },
+
   onHide() {
     if (this._watcher) {
       this._watcher.close()
@@ -69,19 +90,8 @@ App({
     const db = wx.cloud.database()
     this._watcher = db.collection('messages').watch({
       onChange: () => {
-        wx.cloud.callFunction({
-          name: 'chat',
-          data: { action: 'getUnreadCount' },
-          success: (res) => {
-            if (res.result && res.result.code === 0) {
-              const count = res.result.count || 0
-              if (count > 0) {
-                wx.setTabBarBadge({ index: 2, text: String(count > 99 ? '99+' : count) })
-              }
-              // 不清零，由进入聊天详情时手动清除
-            }
-          }
-        })
+        // 消息有变化时，刷新未读 badge
+        this.refreshUnreadBadge()
       },
       onError: (err) => {
         console.error('消息监听失败:', err)

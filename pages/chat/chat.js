@@ -43,12 +43,32 @@ Page({
             loading: false,
             scrollIntoView: messages.length > 0 ? `msg-${messages[messages.length - 1]._id}` : ''
           })
+          // 消息已标记为已读，刷新 tab 红点
+          this.updateTabBadge()
         } else {
           this.setData({ loading: false })
         }
       },
       fail: () => {
         this.setData({ loading: false })
+      }
+    })
+  },
+
+  // 更新底部 tab 未读红点
+  updateTabBadge() {
+    wx.cloud.callFunction({
+      name: 'chat',
+      data: { action: 'getUnreadCount' },
+      success: (res) => {
+        if (res.result && res.result.code === 0) {
+          const count = res.result.count || 0
+          if (count > 0) {
+            wx.setTabBarBadge({ index: 2, text: String(count > 99 ? '99+' : count) })
+          } else {
+            wx.removeTabBarBadge({ index: 2 })
+          }
+        }
       }
     })
   },
