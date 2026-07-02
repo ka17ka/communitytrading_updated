@@ -17,6 +17,16 @@ exports.main = async (event, context) => {
     // 1. 发布商品
     // ==========================================
     case 'publish': {
+      const { name, desc, cloudImageIds } = data
+
+      // -- 内容安全检测（文字）--
+      const textCheck = await checkContent(cloud, openid, [name, desc].filter(Boolean))
+      if (textCheck) return textCheck
+
+      // -- 内容安全检测（图片）--
+      const imgCheck = await checkImages(cloud, cloudImageIds || [])
+      if (imgCheck) return imgCheck
+
       const goods = {
         ...data,
         openid,                          // 记录发布者
@@ -135,6 +145,17 @@ exports.main = async (event, context) => {
         return { code: -1, msg: '无权修改此商品' }
       }
 
+      // -- 内容安全检测（文字）--
+      const { name, desc, cloudImageIds } = updateData
+      const textCheck = await checkContent(cloud, openid, [name, desc].filter(Boolean))
+      if (textCheck) return textCheck
+
+      // -- 内容安全检测（图片）--
+      if (cloudImageIds) {
+        const imgCheck = await checkImages(cloud, cloudImageIds)
+        if (imgCheck) return imgCheck
+      }
+
       await db.collection('goods').doc(goodsId).update({
         data: {
           ...updateData,
@@ -200,4 +221,57 @@ exports.main = async (event, context) => {
     default:
       return { code: -1, msg: `未知操作: ${action}` }
   }
+}
+
+// ==========================================
+// 内容安全检测 — 文字
+// ==========================================
+async function checkContent(cloud, openid, texts) {
+  for (const text of texts) {
+    if (!text || !text.trim()) continue
+    try {
+      const res = await cloud.openapi.security.msgSecCheck({
+        content: text,
+        openid
+      })
+      if (res.result.suggest !== 'pass') {
+        return { code: -1, msg: '内容含有违规信息，请修改后重试' }
+      }
+    } catch (e) {
+      if (e && e.errCode === 87014) {
+        return { code: -1, msg: '内容含有违规信息，请修改后重试' }
+      }
+      console.error('文字安全检测失败:', JSON.stringify(e))
+    }
+  }
+  return null
+}
+
+// ==========================================
+// 内容安全检测 — 图片
+// ==========================================
+async function checkImages(cloud, fileIDs) {
+  if (!fileIDs || fileIDs.length === 0) return null
+  for (const fileID of fileIDs) {
+    if (!fileID) continue
+    try {
+      // 从云存储下载图片 Buffer
+      const download = await cloud.downloadFile({ fileID })
+      const res = await cloud.openapi.security.imgSecCheck({
+        media: {
+          contentType: 'image/jpeg',
+          value: download.fileContent
+        }
+      })
+      if (res.result.suggest !== 'pass') {
+        return { code: -1, msg: '图片含有违规内容，请更换后重试' }
+      }
+    } catch (e) {
+      if (e && e.errCode === 87014) {
+        return { code: -1, msg: '图片含有违规内容，请更换后重试' }
+      }
+      console.error('图片安全检测失败:', JSON.stringify(e))
+    }
+  }
+  return null
 }

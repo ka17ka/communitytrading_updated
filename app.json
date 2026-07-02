@@ -1,6 +1,5 @@
 {
   "pages": [
-    "pages/login/login",
     "pages/home/home",
     "pages/publish/publish",
     "pages/location/location",
@@ -9,7 +8,8 @@
     "pages/profile/profile",
     "pages/mygoods/mygoods",
     "pages/editprofile/editprofile",
-    "pages/conversations/conversations"
+    "pages/conversations/conversations",
+    "pages/login/login"
   ],
   "window": {
     "navigationBarTextStyle": "black",

@@ -4,8 +4,13 @@
   <scroll-view class="msg-list" scroll-y scroll-into-view="{{scrollIntoView}}">
     <view wx:for="{{messages}}" wx:key="_id" class="msg-item" id="msg-{{item._id}}">
 
+      <!-- 系统消息（居中） -->
+      <view wx:if="{{item.type === 'system'}}" class="msg-system">
+        <text class="system-text">{{item.content}}</text>
+      </view>
+
       <!-- 对方消息（左边） -->
-      <view wx:if="{{!item.isSelf}}" class="msg-row msg-left">
+      <view wx:elif="{{!item.isSelf}}" class="msg-row msg-left">
         <image wx:if="{{item.avatarUrl}}" class="avatar" src="{{item.avatarUrl}}" mode="aspectFill"/>
         <view wx:else class="avatar avatar-default"><text class="avatar-emoji">🐻</text></view>
         <view class="bubble bubble-left">
@@ -15,7 +20,7 @@
       </view>
 
       <!-- 自己消息（右边） -->
-      <view wx:if="{{item.isSelf}}" class="msg-row msg-right">
+      <view wx:elif="{{item.isSelf}}" class="msg-row msg-right">
         <view class="bubble bubble-right">
           <text wx:if="{{item.type === 'text'}}">{{item.content}}</text>
           <image wx:elif="{{item.type === 'image'}}" src="{{item.content}}" mode="widthFix" class="msg-image"/>
@@ -26,6 +31,40 @@
 
     </view>
   </scroll-view>
+
+  <!-- 交换联系方式状态栏 -->
+  <view class="swap-bar">
+    <!-- 无交换记录：显示互换按钮 -->
+    <view wx:if="{{swapStatus === 'none'}}" class="swap-default">
+      <button class="swap-btn" bindtap="onSwapContact" loading="{{swapLoading}}">📞 交换联系方式</button>
+    </view>
+
+    <!-- 我发起的，等待对方回应 -->
+    <view wx:elif="{{swapStatus === 'pending' && swapIsRequester}}" class="swap-pending">
+      <text class="swap-hint">⏳ 交换请求已发送，等待对方回应</text>
+    </view>
+
+    <!-- 对方发起的，需要我回应 -->
+    <view wx:elif="{{swapStatus === 'pending' && !swapIsRequester}}" class="swap-respond">
+      <text class="swap-hint">对方请求交换联系方式</text>
+      <view class="swap-actions">
+        <button class="swap-agree-btn" bindtap="onRespondSwap" data-agree="{{true}}">同意</button>
+        <button class="swap-reject-btn" bindtap="onRespondSwap" data-agree="{{false}}">拒绝</button>
+      </view>
+    </view>
+
+    <!-- 已交换成功，显示手机号 -->
+    <view wx:elif="{{swapStatus === 'agreed'}}" class="swap-done">
+      <text class="swap-phone-label">📞 对方手机号：</text>
+      <text class="swap-phone">{{otherPhone}}</text>
+    </view>
+
+    <!-- 被拒绝 -->
+    <view wx:elif="{{swapStatus === 'rejected'}}" class="swap-rejected">
+      <text class="swap-hint">对方暂未公开联系方式</text>
+      <button class="swap-retry-btn" bindtap="onSwapContact" loading="{{swapLoading}}">重新发起</button>
+    </view>
+  </view>
 
   <!-- 底部输入框 -->
   <view class="input-bar">

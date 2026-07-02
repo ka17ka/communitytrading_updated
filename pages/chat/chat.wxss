@@ -136,3 +136,134 @@ page {
   font-size: 28rpx;
   color: #ffffff;
 }
+
+/* ==========================================
+   系统消息（居中）
+   ========================================== */
+.msg-system {
+  display: flex;
+  justify-content: center;
+  padding: 8rpx 0;
+}
+
+.system-text {
+  font-size: 24rpx;
+  color: #999999;
+  background-color: #ededed;
+  padding: 8rpx 24rpx;
+  border-radius: 8rpx;
+  max-width: 80%;
+  text-align: center;
+  line-height: 1.5;
+}
+
+/* ==========================================
+   交换联系方式状态栏
+   ========================================== */
+.swap-bar {
+  background-color: #ffffff;
+  border-top: 1rpx solid #eeeeee;
+  padding: 20rpx 24rpx;
+}
+
+.swap-default,
+.swap-pending,
+.swap-respond,
+.swap-done,
+.swap-rejected {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 16rpx;
+}
+
+.swap-respond {
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.swap-hint {
+  font-size: 26rpx;
+  color: #666666;
+}
+
+.swap-btn {
+  height: 64rpx;
+  padding: 0 32rpx;
+  background-color: #07c160;
+  color: #ffffff;
+  font-size: 26rpx;
+  border-radius: 32rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+}
+
+.swap-actions {
+  display: flex;
+  flex-direction: row;
+  gap: 16rpx;
+  width: 100%;
+  justify-content: center;
+  margin-top: 12rpx;
+}
+
+.swap-agree-btn {
+  height: 64rpx;
+  padding: 0 40rpx;
+  background-color: #07c160;
+  color: #ffffff;
+  font-size: 26rpx;
+  border-radius: 32rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+}
+
+.swap-reject-btn {
+  height: 64rpx;
+  padding: 0 40rpx;
+  background-color: #f5f5f5;
+  color: #999999;
+  font-size: 26rpx;
+  border-radius: 32rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1rpx solid #dddddd;
+}
+
+.swap-done {
+  gap: 8rpx;
+}
+
+.swap-phone-label {
+  font-size: 26rpx;
+  color: #666666;
+}
+
+.swap-phone {
+  font-size: 28rpx;
+  color: #07c160;
+  font-weight: bold;
+}
+
+.swap-rejected {
+  gap: 16rpx;
+}
+
+.swap-retry-btn {
+  height: 56rpx;
+  padding: 0 24rpx;
+  background-color: transparent;
+  color: #07c160;
+  font-size: 24rpx;
+  border-radius: 28rpx;
+  border: 1rpx solid #07c160;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

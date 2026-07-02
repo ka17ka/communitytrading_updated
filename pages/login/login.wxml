@@ -1,6 +1,6 @@
 <view class="container">
-  <text class="title">小区闲置交易</text>
-  <text class="subtitle">欢迎回来</text>
+  <text class="title">绑定手机号</text>
+  <text class="subtitle">方便交易时对方联系您</text>
 
   <view class="form">
     <input
@@ -8,20 +8,10 @@
       type="number"
       placeholder="请输入手机号"
       maxlength="11"
+      value="{{phone}}"
       bindinput="onPhoneInput"
     />
 
-    <view class="code-row">
-      <input
-        class="input code-input"
-        type="number"
-        placeholder="请输入验证码"
-        maxlength="6"
-        bindinput="onCodeInput"
-      />
-      <button class="code-btn" bindtap="sendCode">获取验证码</button>
-    </view>
-
-    <button class="login-btn" bindtap="onLogin">登录</button>
+    <button class="login-btn" bindtap="onBindPhone">保存</button>
   </view>
 </view>

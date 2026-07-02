@@ -23,6 +23,6 @@
 </view>
 
 <!-- 退出登录 -->
-<button class="logout-btn" bindtap="onLogout">退出登录</button>
+<button class="logout-btn" bindtap="onLogout">退出</button>
 
 </view>

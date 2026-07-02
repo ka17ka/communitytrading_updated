@@ -20,6 +20,10 @@ Page({
     this.setData({ nickName: e.detail.value })
   },
 
+  onPhoneInput(e) {
+    this.setData({ phone: e.detail.value })
+  },
+
   // 选择头像
   onChooseAvatar(e) {
     const { avatarUrl } = e.detail
@@ -28,7 +32,7 @@ Page({
 
   // 保存：上传头像到云存储 → 通过 login 云函数写入数据库
   async onSave() {
-    const { nickName, avatarUrl } = this.data
+    const { nickName, avatarUrl, phone } = this.data
     if (!nickName.trim()) {
       wx.showToast({ title: '昵称不能为空', icon: 'none' })
       return
@@ -55,15 +59,24 @@ Page({
       name: 'login',
       data: {
         action: 'updateProfile',
-        data: { nickName: nickName.trim(), avatarUrl: finalAvatarUrl }
+        data: {
+          nickName: nickName.trim(),
+          avatarUrl: finalAvatarUrl,
+          phone: (phone || '').trim()
+        }
       },
       success: (res) => {
         wx.hideLoading()
         if (res.result.code === 0) {
+          // 更新 globalData 和本地缓存
           const profile = getApp().globalData.userProfile
           if (profile) {
             profile.nickName = nickName.trim()
             profile.avatarUrl = finalAvatarUrl
+            profile.phone = (phone || '').trim()
+          }
+          if ((phone || '').trim()) {
+            wx.setStorageSync('userPhone', phone.trim())
           }
           wx.showToast({ title: '保存成功', icon: 'success' })
           setTimeout(() => wx.navigateBack(), 1500)

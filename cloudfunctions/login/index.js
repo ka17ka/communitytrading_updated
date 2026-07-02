@@ -15,10 +15,10 @@ exports.main = async (event, context) => {
   switch (action) {
 
     // ==========================================
-    // 更新用户资料（昵称/头像）
+    // 更新用户资料（昵称/头像/手机号）
     // ==========================================
     case 'updateProfile': {
-      const { nickName, avatarUrl } = data || {}
+      const { nickName, avatarUrl, phone } = data || {}
       const userResult = await db.collection('users').where({ openid }).get()
       if (userResult.data.length === 0) {
         return { code: -1, msg: '用户不存在' }
@@ -27,6 +27,7 @@ exports.main = async (event, context) => {
       const updateData = { updateTime: db.serverDate() }
       if (nickName !== undefined) updateData.nickName = nickName
       if (avatarUrl !== undefined) updateData.avatarUrl = avatarUrl
+      if (phone !== undefined) updateData.phone = phone
       await db.collection('users').doc(docId).update({ data: updateData })
       return { code: 0, msg: '保存成功' }
     }

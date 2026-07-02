@@ -98,7 +98,7 @@ Page({
 
     const openid = getApp().globalData.openid
     if (!openid) {
-      wx.showToast({ title: '请先登录', icon: 'none' })
+      wx.showToast({ title: '请稍后重试', icon: 'none' })
       return
     }
 
@@ -154,11 +154,11 @@ Page({
     })
   },
 
-  // 退出登录 → 清除数据，回到登录页
+  // 退出登录 → 清除本地缓存
   onLogout() {
     wx.showModal({
       title: '提示',
-      content: '确定要退出登录吗？',
+      content: '确定要退出吗？将清除本地缓存数据。',
       success: (res) => {
         if (res.confirm) {
           wx.removeStorageSync('isLogin')
@@ -166,7 +166,7 @@ Page({
           wx.removeStorageSync('nickName')
           wx.removeStorageSync('avatarUrl')
           wx.reLaunch({
-            url: '/pages/login/login'
+            url: '/pages/home/home'
           })
         }
       }

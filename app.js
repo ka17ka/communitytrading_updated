@@ -57,10 +57,13 @@ App({
               this.globalData.openid = openid
               this.globalData.userProfile = userProfile
 
-              // 检查是否已登录过（有手机号就是老用户）
-              if (userProfile && userProfile.phone) {
-                wx.setStorageSync('isLogin', true)
-                wx.setStorageSync('userPhone', userProfile.phone)
+              // 静默登录：拿到 openid 即算登录成功
+              wx.setStorageSync('isLogin', true)
+              if (userProfile) {
+                wx.setStorageSync('nickName', userProfile.nickName || '')
+                if (userProfile.phone) {
+                  wx.setStorageSync('userPhone', userProfile.phone)
+                }
               }
             },
             fail: err => {

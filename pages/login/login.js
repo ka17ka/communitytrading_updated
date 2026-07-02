@@ -1,49 +1,38 @@
 Page({
   data: {
     phone: '',
-    code: '',
-    logging: false
+  },
+
+  onLoad() {
+    // 回显已绑定的手机号
+    const phone = wx.getStorageSync('userPhone') || ''
+    if (phone) {
+      this.setData({ phone })
+    }
   },
 
   onPhoneInput(e) {
     this.setData({ phone: e.detail.value })
   },
 
-  onCodeInput(e) {
-    this.setData({ code: e.detail.value })
-  },
-
-  // 发送验证码（模拟）
-  sendCode() {
-    const phone = this.data.phone
-    if (phone.length !== 11) {
-      wx.showToast({ title: '请输入正确的手机号', icon: 'none' })
+  // 绑定手机号：将手机号写入 users 集合（与 openid 关联）
+  onBindPhone() {
+    const phone = this.data.phone.trim()
+    if (!phone) {
+      wx.showToast({ title: '请输入手机号', icon: 'none' })
       return
     }
-    wx.showToast({ title: '验证码已发送', icon: 'success' })
-  },
-
-  // ==========================================
-  // 登录：保存手机号 + 触发云登录
-  // ==========================================
-  onLogin() {
-    const { phone, code } = this.data
-    if (!phone || !code) {
-      wx.showToast({ title: '请填写手机号和验证码', icon: 'none' })
-      return
-    }
-    if (phone.length !== 11) {
+    if (phone.length !== 11 || !/^\d{11}$/.test(phone)) {
       wx.showToast({ title: '请输入正确的手机号', icon: 'none' })
       return
     }
 
-    this.setData({ logging: true })
+    wx.showLoading({ title: '保存中...', mask: true })
 
-    // 保存手机号
-    wx.setStorageSync('isLogin', true)
+    // 保存到本地
     wx.setStorageSync('userPhone', phone)
 
-    // 将手机号写入 users 集合（与 openid 关联）
+    // 写入云数据库 users 集合（与 openid 关联）
     const openid = getApp().globalData.openid
     if (openid) {
       const db = wx.cloud.database()
@@ -54,17 +43,31 @@ Page({
               data: {
                 phone,
                 updateTime: db.serverDate()
+              },
+              success: () => {
+                wx.hideLoading()
+                wx.showToast({ title: '绑定成功', icon: 'success' })
+                setTimeout(() => wx.navigateBack(), 1500)
+              },
+              fail: () => {
+                wx.hideLoading()
+                wx.showToast({ title: '保存失败，请重试', icon: 'none' })
               }
             })
+          } else {
+            wx.hideLoading()
+            wx.showToast({ title: '用户不存在，请重试', icon: 'none' })
           }
+        },
+        fail: () => {
+          wx.hideLoading()
+          wx.showToast({ title: '保存失败，请重试', icon: 'none' })
         }
       })
+    } else {
+      wx.hideLoading()
+      wx.showToast({ title: '请稍后重试', icon: 'none' })
     }
-
-    // 跳转到首页
-    wx.reLaunch({
-      url: '/pages/home/home'
-    })
   },
 
 })
